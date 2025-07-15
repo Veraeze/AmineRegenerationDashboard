@@ -7,11 +7,13 @@ import pickle
 # ------------------ Load Model and Data ------------------ #
 
 # Load pre-trained Random Forest model
-with open('model/rf_model.pkl', 'rb') as file:
+with open('dashboard/model/rf_model.pkl', 'rb') as file:
     model = pickle.load(file)
 
 # Load pre-cleaned dataset (for EDA visuals)
-df = pd.read_csv('data/amine_gen_data_cleaned.csv')
+df = pd.read_csv('dashboard/data/amine_gen_data_cleaned.csv')
+importance = pd.read_csv('dashboard/data/feature_importance.csv')
+
 
 # ------------------ Streamlit App ------------------ #
 st.set_page_config(page_title="Amine Regeneration Dashboard", layout="wide")
