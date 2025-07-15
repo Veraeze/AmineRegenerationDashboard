@@ -1,0 +1,10 @@
+Feature,Importance
+DEA7 - H2S Composition(ppm),0.8688281583625709
+DEA7 - CO2 Composition(mole %),0.13106391560632197
+stripper - Stage Pressure (Condenser),7.525051128959828e-05
+stripper - Stage Pressure (Reboiler),1.3053196092391572e-05
+DEA7 - Temperature,1.1200720411539644e-05
+DEA6 - Acid Gas Temperature,4.837834995568719e-06
+DEA6 - Temperature,3.5837683179750565e-06
+DEA6 - H2S Composition(ppm),0.0
+DEA6 - CO2 Composition(mole %),0.0
