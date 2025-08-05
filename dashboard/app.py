@@ -20,7 +20,7 @@ st.title(" Amine Regeneration Dashboard — Objective 2")
 st.markdown("Predict optimal reboiler duty and explore key insights from the process dataset.")
 
 # ------------------ Tabs ------------------ #
-tabs = st.tabs(["EDA Insights", "Predict Reboiler Duty"])
+tabs = st.tabs(["EDA Insights", "Predict Reboiler Duty", "Classify Health State"])
 
 # ------------------ EDA Tab ------------------ #
 with tabs[0]:
@@ -78,3 +78,28 @@ with tabs[1]:
     if st.button("Predict Reboiler Duty"):
         prediction = model.predict(input_data)[0]
         st.success(f"Predicted Reboiler Duty: {prediction:,.0f} Btu/hr")
+
+# ------------------ Classification Tab (Objective 3) ------------------ #
+with tabs[2]:
+    st.header(" Classify Health State")
+    st.markdown("Enter process deltas and values to classify the current health state of the amine system:")
+
+    # Load Objective 3 model and scaler
+    with open('dashboard/model/amine_degradation.pkl', 'rb') as f:
+        clf = pickle.load(f)
+    with open('dashboard/model/scaler.pkl', 'rb') as f:
+        scaler = pickle.load(f)
+
+    # User inputs for classification
+    delta_co2 = st.number_input("Delta CO2", min_value=-0.05, max_value=0.05, value=0.0)
+    delta_h2s = st.number_input("Delta H2S", min_value=-150.0, max_value=0.0, value=-87.0)
+    delta_temp = st.number_input("Delta Temp", min_value=-30.0, max_value=30.0, value=0.0)
+    molar_flow = st.number_input("DEA7 - Molar Flow", min_value=5000.0, max_value=15000.0, value=10000.0)
+    reboiler_duty = st.number_input("Reboiler Duty (Btu/hr)", min_value=10000.0, max_value=100000.0, value=50000.0)
+
+    # Prediction logic
+    if st.button("Classify Health State"):
+        features = [[delta_co2, delta_h2s, delta_temp, molar_flow, reboiler_duty]]
+        features_scaled = scaler.transform(features)
+        prediction = clf.predict(features_scaled)[0]
+        st.success(f"Predicted Health State: {prediction}")
