@@ -6,21 +6,21 @@ import pickle
 
 # ------------------ Load Model and Data ------------------ #
 
-with open('dashboard/model/rf_model.pkl', 'rb') as file:
+with open('model/rf_model.pkl', 'rb') as file:
     model = pickle.load(file)
 
 # Load cleaned data and feature importance
-df = pd.read_csv('dashboard/data/amine_gen_data_cleaned.csv')
-importance = pd.read_csv('dashboard/data/feature_importance.csv')
+df = pd.read_csv('data/amine_gen_data_cleaned.csv')
+importance = pd.read_csv('data/feature_importance.csv')
 
 # ------------------ Streamlit App ------------------ #
 st.set_page_config(page_title="Amine Regeneration Dashboard", layout="wide")
 
-st.title(" Amine Regeneration Dashboard — Objective 2")
+st.title(" Amine Regeneration Dashboard")
 st.markdown("Predict optimal reboiler duty and explore key insights from the process dataset.")
 
 # ------------------ Tabs ------------------ #
-tabs = st.tabs(["EDA Insights", "Predict Reboiler Duty", "Classify Health State"])
+tabs = st.tabs(["EDA Insights", "Predict Reboiler Duty", "Amine Health State"])
 
 # ------------------ EDA Tab ------------------ #
 with tabs[0]:
@@ -81,13 +81,13 @@ with tabs[1]:
 
 # ------------------ Classification Tab (Objective 3) ------------------ #
 with tabs[2]:
-    st.header(" Classify Health State")
+    st.header(" Amine Health State")
     st.markdown("Enter process deltas and values to classify the current health state of the amine system:")
 
     # Load Objective 3 model and scaler
-    with open('dashboard/model/amine_degradation.pkl', 'rb') as f:
+    with open('model/amine_degradation.pkl', 'rb') as f:
         clf = pickle.load(f)
-    with open('dashboard/model/scaler.pkl', 'rb') as f:
+    with open('model/scaler.pkl', 'rb') as f:
         scaler = pickle.load(f)
 
     # User inputs for classification
