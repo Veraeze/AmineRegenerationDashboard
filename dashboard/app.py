@@ -31,8 +31,8 @@ importance = pd.read_csv(importance_path)
 # ------------------ Streamlit App ------------------ #
 st.set_page_config(page_title="Amine Regeneration Dashboard", layout="wide")
 
-st.title(" Amine Regeneration Dashboard — Objective 2 & 3")
-st.markdown("Predict optimal reboiler duty and classify health state of the amine system.")
+st.title(" Amine Regeneration Dashboard")
+st.markdown("Predict optimal reboiler duty and health state of the amine system.")
 
 # ------------------ Tabs ------------------ #
 tabs = st.tabs(["EDA Insights", "Predict Reboiler Duty", "Classify Health State"])
@@ -41,6 +41,15 @@ tabs = st.tabs(["EDA Insights", "Predict Reboiler Duty", "Classify Health State"
 with tabs[0]:
     st.header(" Exploratory Data Analysis")
 
+    st.subheader("Cluster Pairplot")
+    if 'Health_State' in df.columns:
+        selected_features = ['Delta_CO2', 'Delta_H2S', 'Delta_Temp', 'DEA7 - Molar Flow', 'stripper - Spec Value (Duty)', 'Health_State']
+        df_pair = df[selected_features].dropna()
+
+        st.markdown("Due to performance, only a random 1000 rows will be plotted.")
+        pairplot_fig = sns.pairplot(df_pair.sample(n=1000, random_state=42), hue='Health_State', palette='Set2')
+        st.pyplot(pairplot_fig)
+        
     st.subheader("Feature Importance")
     fig1, ax1 = plt.subplots(figsize=(8,5))
     ax1.barh(importance['Feature'], importance['Importance'], color='teal')
@@ -56,6 +65,17 @@ with tabs[0]:
     fig3, ax3 = plt.subplots(figsize=(8,5))
     sns.histplot(df['stripper - Spec Value (Duty)'], bins=40, kde=True, ax=ax3)
     st.pyplot(fig3)
+
+    st.subheader("Cluster Distribution Count")
+    if 'Health_State' in df.columns:
+        fig4, ax4 = plt.subplots(figsize=(6, 4))
+        sns.countplot(data=df, x='Health_State', hue='Health_State', palette='Set2', ax=ax4)
+        if ax4.legend_ is not None:
+            ax4.legend_.remove()         
+        ax4.set_title("Number of Records per Health State")
+        st.pyplot(fig4)
+
+    
 
 # ------------------ Prediction Tab ------------------ #
 with tabs[1]:
