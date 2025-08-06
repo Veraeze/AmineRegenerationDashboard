@@ -32,3 +32,5 @@ reboilerduty/
 │   │   └── rf_model.pkl
 ├── requirements.txt
 └── README.md
+
+Note: This project uses scikit-learn==1.6.1 to match the environment where models were trained. Upgrading may require re-training models.

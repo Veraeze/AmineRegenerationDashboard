@@ -3,24 +3,39 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pickle
+import os
+
+# ------------------ Path Setup ------------------ #
+BASE_DIR = os.path.dirname(__file__)
 
 # ------------------ Load Model and Data ------------------ #
+rf_model_path = os.path.join(BASE_DIR, 'model', 'rf_model.pkl')
+clf_model_path = os.path.join(BASE_DIR, 'model', 'amine_degradation.pkl')
+scaler_path = os.path.join(BASE_DIR, 'model', 'scaler.pkl')
+data_path = os.path.join(BASE_DIR, 'data', 'amine_gen_data_cleaned.csv')
+importance_path = os.path.join(BASE_DIR, 'data', 'feature_importance.csv')
 
-with open('model/rf_model.pkl', 'rb') as file:
+with open(rf_model_path, 'rb') as file:
     model = pickle.load(file)
 
+with open(clf_model_path, 'rb') as f:
+    clf = pickle.load(f)
+
+with open(scaler_path, 'rb') as f:
+    scaler = pickle.load(f)
+
 # Load cleaned data and feature importance
-df = pd.read_csv('data/amine_gen_data_cleaned.csv')
-importance = pd.read_csv('data/feature_importance.csv')
+df = pd.read_csv(data_path)
+importance = pd.read_csv(importance_path)
 
 # ------------------ Streamlit App ------------------ #
 st.set_page_config(page_title="Amine Regeneration Dashboard", layout="wide")
 
-st.title(" Amine Regeneration Dashboard")
-st.markdown("Predict optimal reboiler duty and explore key insights from the process dataset.")
+st.title(" Amine Regeneration Dashboard — Objective 2 & 3")
+st.markdown("Predict optimal reboiler duty and classify health state of the amine system.")
 
 # ------------------ Tabs ------------------ #
-tabs = st.tabs(["EDA Insights", "Predict Reboiler Duty", "Amine Health State"])
+tabs = st.tabs(["EDA Insights", "Predict Reboiler Duty", "Classify Health State"])
 
 # ------------------ EDA Tab ------------------ #
 with tabs[0]:
@@ -79,16 +94,10 @@ with tabs[1]:
         prediction = model.predict(input_data)[0]
         st.success(f"Predicted Reboiler Duty: {prediction:,.0f} Btu/hr")
 
-# ------------------ Classification Tab (Objective 3) ------------------ #
+# ------------------ Classification Tab ------------------ #
 with tabs[2]:
-    st.header(" Amine Health State")
+    st.header(" Classify Health State")
     st.markdown("Enter process deltas and values to classify the current health state of the amine system:")
-
-    # Load Objective 3 model and scaler
-    with open('model/amine_degradation.pkl', 'rb') as f:
-        clf = pickle.load(f)
-    with open('model/scaler.pkl', 'rb') as f:
-        scaler = pickle.load(f)
 
     # User inputs for classification
     delta_co2 = st.number_input("Delta CO2", min_value=-0.05, max_value=0.05, value=0.0)
