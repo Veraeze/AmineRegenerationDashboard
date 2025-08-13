@@ -119,7 +119,6 @@ with tabs[2]:
     st.header(" Amine Health State")
     st.markdown("Enter process deltas and values to classify the current health state of the amine system:")
 
-    # Defaults that match the scaler's training data
     delta_co2 = st.number_input("Delta CO2", value=0.0, format="%.5f")
     delta_h2s = st.number_input("Delta H2S", value=-87.0)
     delta_temp = st.number_input("Delta Temp", value=0.0)
@@ -127,14 +126,16 @@ with tabs[2]:
     reboiler_duty = st.number_input("Reboiler Duty (Btu/hr)", value=50000.0)
 
     if st.button("Classify Health State"):
-        # Ensure all features are filled
-        features = [[
-            float(delta_co2),
-            float(delta_h2s),
-            float(delta_temp),
-            float(molar_flow),
-            float(reboiler_duty)
-        ]]
-        features_scaled = scaler.transform(features)
-        prediction = clf.predict(features_scaled)[0]
-        st.success(f"Predicted Health State: {prediction}")
+        inputs = [delta_co2, delta_h2s, delta_temp, molar_flow, reboiler_duty]
+
+        # Check if any input is None or empty
+        if any(v is None for v in inputs):
+            st.error("⚠️ Please fill in all the required fields before classifying.")
+        else:
+            try:
+                features = [[float(v) for v in inputs]]
+                features_scaled = scaler.transform(features)
+                prediction = clf.predict(features_scaled)[0]
+                st.success(f"Predicted Health State: {prediction}")
+            except Exception as e:
+                st.error(f"Something went wrong during classification: {e}")
