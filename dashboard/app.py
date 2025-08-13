@@ -119,27 +119,21 @@ with tabs[2]:
     st.header(" Amine Health State")
     st.markdown("Enter process deltas and values to classify the current health state of the amine system:")
 
-    DEFAULTS = {
-        "delta_co2": 0.0,
-        "delta_h2s": -87.0,
-        "delta_temp": 0.0,
-        "molar_flow": 10000.0,
-        "reboiler_duty": 50000.0
-    }
-
-    delta_co2 = st.number_input("Delta CO2", min_value=-0.05, max_value=0.05, value=DEFAULTS["delta_co2"])
-    delta_h2s = st.number_input("Delta H2S", min_value=-150.0, max_value=0.0, value=DEFAULTS["delta_h2s"])
-    delta_temp = st.number_input("Delta Temp", min_value=-30.0, max_value=30.0, value=DEFAULTS["delta_temp"])
-    molar_flow = st.number_input("DEA7 - Molar Flow", min_value=5000.0, max_value=15000.0, value=DEFAULTS["molar_flow"])
-    reboiler_duty = st.number_input("Reboiler Duty (Btu/hr)", min_value=10000.0, max_value=100000.0, value=DEFAULTS["reboiler_duty"])
+    # Defaults that match the scaler's training data
+    delta_co2 = st.number_input("Delta CO2", value=0.0, format="%.5f")
+    delta_h2s = st.number_input("Delta H2S", value=-87.0)
+    delta_temp = st.number_input("Delta Temp", value=0.0)
+    molar_flow = st.number_input("DEA7 - Molar Flow", value=10000.0)
+    reboiler_duty = st.number_input("Reboiler Duty (Btu/hr)", value=50000.0)
 
     if st.button("Classify Health State"):
+        # Ensure all features are filled
         features = [[
-            delta_co2 or DEFAULTS["delta_co2"],
-            delta_h2s or DEFAULTS["delta_h2s"],
-            delta_temp or DEFAULTS["delta_temp"],
-            molar_flow or DEFAULTS["molar_flow"],
-            reboiler_duty or DEFAULTS["reboiler_duty"]
+            float(delta_co2),
+            float(delta_h2s),
+            float(delta_temp),
+            float(molar_flow),
+            float(reboiler_duty)
         ]]
         features_scaled = scaler.transform(features)
         prediction = clf.predict(features_scaled)[0]
