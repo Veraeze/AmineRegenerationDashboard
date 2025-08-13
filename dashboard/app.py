@@ -117,7 +117,7 @@ with tabs[1]:
 # ------------------ Classification Tab ------------------ #
 with tabs[2]:
     st.header(" Amine Health State")
-    st.markdown("Enter process deltas and values to classify the current health state of the amine system:")
+    st.markdown("Enter process deltas and values to classify the current health state of the amine system(Please fill in all the required fields before classifying):")
 
     delta_co2 = st.number_input("Delta CO2", value=0.0, format="%.5f")
     delta_h2s = st.number_input("Delta H2S", value=-87.0)
@@ -130,7 +130,7 @@ with tabs[2]:
 
         # Check if any input is None or empty
         if any(v is None for v in inputs):
-            st.error("⚠️ Please fill in all the required fields before classifying.")
+            st.error(" Please fill in all the required fields before classifying.")
         else:
             try:
                 features = [[float(v) for v in inputs]]
